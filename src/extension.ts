@@ -1,24 +1,24 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import * as http from "http";
-import { ServerResponse } from "node:http";
 
 const logger = (fun: CallableFunction) =>
-  console.log(`[${new Date()}] ${fun.call(null)}`);
+  console.log(`[${new Date()}] ${fun()}`);
 
 const server = http.createServer(
   (request: http.IncomingMessage, response: http.ServerResponse) => {
     request.on("data", (chunk) => {
       logger(() => `received data[${chunk}]`);
       const data = JSON.parse(chunk);
-      if (data["cmd"] === "list") {
+      if (data["cmd"] === "find") {
         vscode.commands.getCommands(false).then((cmds: String[]) => {
           console.log(cmds);
-          response.end(JSON.stringify(cmds));
+          response.end(
+            cmds.filter((cmd) => cmd.indexOf(data["args"]) >= 0).join("\n")
+          );
         });
       } else {
-        // https://github.com/microsoft/vscode-remote-release/issues/3552#issuecomment-732414007
+        // https://github.com/microsoft/vscode-remote-release/issues/3552#issuecomment-732414007e
+        // https://github.com/microsoft/vscode/issues/58#issuecomment-205370778
         vscode.commands.executeCommand(data["cmd"], data["args"]);
         response.end();
       }
@@ -26,13 +26,7 @@ const server = http.createServer(
   }
 );
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  // console.log('Congratulations, your extension "vscode-api-runner" is now active!');
-
   server.listen("4000");
   logger(() => "Server startup");
 
