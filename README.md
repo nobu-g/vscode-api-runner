@@ -1,28 +1,55 @@
-# vscode-api-runner README
+# vscode-api-runner
 
-This is the README for your extension "vscode-api-runner". After writing up a brief description, we recommend including the following sections.
+This is an extension for Microsoft Visual Studio Code (VSCode), which provides an HTTP interface to run VSCode API commands.
+
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+VSCode and its extensions provide various functions as APIs.
+However, users do not have direct access to the APIs and usually need to use them through command palettes.
 
-For example if there is an image subfolder under your extension project workspace:
+To solve this problem, this extension provides direct access to the API via HTTP.
+Specifically, this extension sets up an HTTP server and listens to a specified port (default: `9607`) of `localhost.`
+When the server receives a string, which represents some API, this extension calls that API internally.
 
-\!\[feature X\]\(images/feature-x.png\)
+Accordingly, you can call any VSCode API without using command pallettes.
+This means you can manipulate VSCode from a command line and automate series of actions with some simple shellscript.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-## Requirements
+## Examples
 
-None.
+The server receives HTTP requests which include JSON string.
+The JSON string needs `"cmd"` and `"args"` properties, which means an API command and its arguments, respectively.
+
+Here are some examples:
+- Open configuration
+```
+$ curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  http://localhost:9607 \
+  -d '{ "cmd": "workbench.action.openSettingsJson", "args": "" }'
+```
+
+- Open folder
+```
+$ curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  http://localhost:9607 \
+  -d '{ "cmd": "vscode.openFolder", "args": { "scheme": "file", "path": "/usr/local/bin", "$mid": 1 } }'
+```
+
+- Find available commands which include a keyword "open"
+```
+$ curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  http://localhost:9607 \
+  -d '{ "cmd": "find", "args": "open" }'
+```
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+- `vscodeApiRunner.port`: port number on which the server listens.
