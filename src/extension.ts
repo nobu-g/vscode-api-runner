@@ -1,25 +1,25 @@
-import * as vscode from "vscode";
-import * as http from "http";
+import * as vscode from 'vscode';
+import * as http from 'http';
 
 const logger = (fun: CallableFunction) =>
   console.log(`[${new Date()}] ${fun()}`);
 
 const server = http.createServer(
   (request: http.IncomingMessage, response: http.ServerResponse) => {
-    request.on("data", (chunk) => {
+    request.on('data', (chunk) => {
       logger(() => `received data[${chunk}]`);
       const data = JSON.parse(chunk);
-      if (data["cmd"] === "find") {
+      if (data['cmd'] === 'find') {
         vscode.commands.getCommands(false).then((cmds: String[]) => {
           console.log(cmds);
           response.end(
-            cmds.filter((cmd) => cmd.indexOf(data["args"]) >= 0).join("\n")
+            cmds.filter((cmd) => cmd.indexOf(data['args']) >= 0).join('\n')
           );
         });
       } else {
         // https://github.com/microsoft/vscode-remote-release/issues/3552#issuecomment-732414007e
         // https://github.com/microsoft/vscode/issues/58#issuecomment-205370778
-        vscode.commands.executeCommand(data["cmd"], data["args"]);
+        vscode.commands.executeCommand(data['cmd'], data['args']);
         response.end();
       }
     });
@@ -27,8 +27,8 @@ const server = http.createServer(
 );
 
 export function activate(context: vscode.ExtensionContext) {
-  server.listen("4000");
-  logger(() => "Server startup");
+  server.listen('4000');
+  logger(() => 'Server startup');
 
   // 	// The command has been defined in the package.json file
   // 	// Now provide the implementation of the command with registerCommand
@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export const deactivate = () => {
   server.close();
-  logger(() => "Server shutdown");
+  logger(() => 'Server shutdown');
 };
 
 // システムのコマンドはここから探す
