@@ -10,7 +10,7 @@ const server = http.createServer(
       logger(() => `received data[${chunk}]`);
       const data = JSON.parse(chunk);
       if (data['cmd'] === 'find') {
-        vscode.commands.getCommands(false).then((cmds: String[]) => {
+        vscode.commands.getCommands(false).then((cmds: string[]) => {
           console.log(cmds);
           response.end(
             cmds.filter((cmd) => cmd.indexOf(data['args']) >= 0).join('\n')
@@ -26,7 +26,7 @@ const server = http.createServer(
   }
 );
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
   server.listen('4000');
   logger(() => 'Server startup');
 
@@ -44,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export const deactivate = () => {
+export const deactivate = (): void => {
   server.close();
   logger(() => 'Server shutdown');
 };
