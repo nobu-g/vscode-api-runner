@@ -53,3 +53,7 @@ $ curl \
 
 This extension contributes the following settings:
 - `vscodeApiRunner.port`: port number on which the server listens.
+
+
+## LICENSE
+MIT
