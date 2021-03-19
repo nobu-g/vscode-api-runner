@@ -1,6 +1,7 @@
 {
   "name": "vscode-api-runner",
-  "displayName": "vscode-api-runner",
+  "displayName": "VSCode API Runner",
+  "publisher": "nobu-g",
   "description": "",
   "version": "0.0.1",
   "license": "MIT",
@@ -15,12 +16,17 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "vscode-api-runner.helloWorld",
-        "title": "Hello World"
+    "commands": [],
+    "configuration": {
+      "title": "VSCodeApiRunner",
+      "properties": {
+        "vscodeApiRunner.port": {
+          "type": "number",
+          "default": 9607,
+          "description": "port number to listen to"
+        }
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",

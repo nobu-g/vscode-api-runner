@@ -27,8 +27,10 @@ const server = http.createServer(
 );
 
 export function activate(context: vscode.ExtensionContext): void {
-  server.listen('4000');
-  logger(() => 'Server startup');
+  const config = vscode.workspace.getConfiguration('vscodeApiRunner');
+  const port = config.get('port');
+  server.listen(port);
+  logger(() => `Server startup on port: ${port}`);
 
   // 	// The command has been defined in the package.json file
   // 	// Now provide the implementation of the command with registerCommand
@@ -48,6 +50,3 @@ export const deactivate = (): void => {
   server.close();
   logger(() => 'Server shutdown');
 };
-
-// システムのコマンドはここから探す
-// https://code.visualstudio.com/docs/getstarted/keybindings
