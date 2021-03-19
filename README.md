@@ -54,6 +54,10 @@ $ curl \
 This extension contributes the following settings:
 - `vscodeApiRunner.port`: port number on which the server listens.
 
+## Creating Package File
+- `yarn install`
+- `npm install -g vsce`
+- `vsce package`
 
 ## LICENSE
 MIT
